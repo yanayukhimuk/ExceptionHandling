@@ -15,13 +15,13 @@ namespace Task1
                     char firstLetter = GetFirstCharacter(line);
                     Console.WriteLine("The first letter is: " + firstLetter);
                 }
-                catch (ArgumentOutOfRangeException e)
+                catch (ArgumentException e)
                 {
-                    Console.WriteLine(e.Message + " Probably, the string is empty.");
+                    Console.WriteLine(e.Message + " The string is empty.");
                 }
                 catch (NullReferenceException e)
                 {
-                    Console.WriteLine(e.Message + " Probably, the string is null.");
+                    Console.WriteLine(e.Message + " The string is null.");
                 }
                 catch (Exception e)
                 {
@@ -36,15 +36,8 @@ namespace Task1
 
         public static char GetFirstCharacter(string line)
         {
-            char firstCharacter;
-            if (line == null)
-            {
-                throw new NullReferenceException();
-            }
-            else if (line.Length <= 0)
-                throw new ArgumentOutOfRangeException();
-            else
-                firstCharacter = line[0];
+            if (line.Length <= 0)
+                throw new ArgumentException();
             return line[0];
         }
 

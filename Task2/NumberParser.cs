@@ -11,7 +11,7 @@ namespace Task2
                 throw new ArgumentNullException(nameof(stringValue), "String cannot be null, empty or whitespace");
             }
 
-            if (string.IsNullOrEmpty(stringValue) || string.IsNullOrWhiteSpace(stringValue))
+            if (string.IsNullOrWhiteSpace(stringValue))
             {
                 throw new FormatException($"Symbol '{stringValue}' cannot be part of a number");
             }
@@ -21,30 +21,33 @@ namespace Task2
             var isNegative = IsNegative(stringValue);
             var hasPlus = HasPlus(stringValue);
 
-            var result = 0;
+            long result = 0;
+
             var start = isNegative || hasPlus ? 1 : 0;
 
             for (var i = start; i < stringValue.Length; i++)
             {
-                if (stringValue[i] < '0' || stringValue[i] > '9')
+                if (!char.IsDigit(stringValue[i]))
                 {
                     throw new FormatException($"Symbol '{stringValue[i]}' cannot be part of a number");
                 }
-
-                try
-                {
-                    result = checked(result * 10 + stringValue[i] - '0');
-                }
-                catch (OverflowException)
-                {
-                    throw new OverflowException($"Can't be converted, because number must be between {int.MinValue} and {int.MaxValue}");
-                }
+                result = result * 10 + stringValue[i] - '0';
             }
 
-            return isNegative ? -result : result;
+            if(isNegative)
+            {
+                result = -result;
+            }
+
+            if (result < int.MinValue || result > int.MaxValue)
+            {
+                throw new OverflowException("The result doesn't fit the expected range.");
+            }
+
+            return Convert.ToInt32(result);
         }
 
-        private static bool IsNegative(string value) => value[0] == '-';
-        private static bool HasPlus(string value) => value[0] == '+';
+        private static bool IsNegative(string value) => value.StartsWith('-');
+        private static bool HasPlus(string value) => value.StartsWith('+');
     }
 }
